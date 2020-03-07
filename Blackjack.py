@@ -51,35 +51,38 @@ def prompt_to_hit():
 
 hit_input = prompt_to_hit()
 
-def update_player_hand(hit_input, player_hand, dealer_hand, cards_left):
+def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned_card_values):
     update_counter = 0
     while update_counter < 1:
         if hit_input == "Y" and len(player_hand) == 2:
             player_hand.append(random.sample(cards_left, 1)[0])
             # random.sample returns a list
-            print(len(player_hand), player_hand[2])
             cards_left = [card for card in list_of_all_cards if card not in player_hand + dealer_hand]
-            initial_string = ("You have a " + player_hand[0].split(" ")[-1] + ", a "
+            initial_string = ("\n" + "You have a " + player_hand[0].split(" ")[-1] + ", a "
                               + player_hand[1].split(" ")[-1]+ ", and a "
                               + player_hand[2].split(" ")[-1])
             print(initial_string)
-            prompt_to_hit()
+            sum_player_hand = sum([assigned_card_values[card] for card in player_hand])
+            print("Your current total is " + str(sum_player_hand))
+            hit_input = prompt_to_hit()
         elif hit_input == "Y" and len(player_hand) > 2:
             player_hand.append(random.sample(cards_left, 1)[0])
             #random.sample returns a list
             cards_left = [card for card in list_of_all_cards if card not in player_hand + dealer_hand]
-            initial_string = ("You have a " + player_hand[0].split(" ")[-1] + ", a " + player_hand[1].split(" ")[-1])
+            initial_string = ("\n" + "You have a " + player_hand[0].split(" ")[-1] + ", a " + player_hand[1].split(" ")[-1])
             for card in range(2, len(player_hand) - 1):
-                initial_string += (", a " + player_hand[card])
-            initial_string += (", and a " + player_hand[-1])
+                initial_string += (", a " + player_hand[card].split(" ")[-1])
+            initial_string += (", and a " + player_hand[-1].split(" ")[-1])
             print(initial_string)
-            prompt_to_hit()
+            sum_player_hand = sum([assigned_card_values[card] for card in player_hand])
+            print("Your current total is " + str(sum_player_hand))
+            hit_input = prompt_to_hit()
         elif hit_input == "N":
-            print("Player chose to Stay")
+            print("\n" + "Player chose to Stay")
             update_counter += 1
             return (player_hand, cards_left)
         else:
-            print("Incorrect input...")
-            prompt_to_hit()
+            print("\n" + "Incorrect input...")
+            hit_input = prompt_to_hit()
 
-update_player_hand(hit_input, player_hand, dealer_hand, cards_left)
+player_hand, cards_left = update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned_card_values)
