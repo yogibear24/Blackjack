@@ -58,7 +58,8 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
             player_hand.append(random.sample(cards_left, 1)[0])
             # random.sample returns a list
             cards_left = [card for card in list_of_all_cards if card not in player_hand + dealer_hand]
-            initial_string = ("\n" + "You have a " + player_hand[0].split(" ")[-1] + ", a "
+            print("\n" + "The Dealer currently has " + str(assigned_card_values[dealer_hand[0]]) + " and one Unknown Number")
+            initial_string = ("You have a " + player_hand[0].split(" ")[-1] + ", a "
                               + player_hand[1].split(" ")[-1]+ ", and a "
                               + player_hand[2].split(" ")[-1])
             print(initial_string)
@@ -69,7 +70,8 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
             player_hand.append(random.sample(cards_left, 1)[0])
             #random.sample returns a list
             cards_left = [card for card in list_of_all_cards if card not in player_hand + dealer_hand]
-            initial_string = ("\n" + "You have a " + player_hand[0].split(" ")[-1] + ", a " + player_hand[1].split(" ")[-1])
+            print("\n" + "The Dealer currently has " + str(assigned_card_values[dealer_hand[0]]) + " and one Unknown Number")
+            initial_string = ("You have a " + player_hand[0].split(" ")[-1] + ", a " + player_hand[1].split(" ")[-1])
             for card in range(2, len(player_hand) - 1):
                 initial_string += (", a " + player_hand[card].split(" ")[-1])
             initial_string += (", and a " + player_hand[-1].split(" ")[-1])
@@ -83,6 +85,20 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
             return (player_hand, cards_left)
         else:
             print("\n" + "Incorrect input...")
+            print("\n" + "The Dealer currently has " + str(assigned_card_values[dealer_hand[0]]) + " and one Unknown Number")
+            if len(player_hand) == 2:
+                initial_string = ("You have a " + player_hand[0].split(" ")[-1] + ", a "
+                                  + player_hand[1].split(" ")[-1] + ", and a "
+                                  + player_hand[2].split(" ")[-1])
+                print(initial_string)
+            elif len(player_hand) > 2:
+                initial_string = ("You have a " + player_hand[0].split(" ")[-1] + ", a " + player_hand[1].split(" ")[-1])
+                for card in range(2, len(player_hand) - 1):
+                    initial_string += (", a " + player_hand[card].split(" ")[-1])
+                initial_string += (", and a " + player_hand[-1].split(" ")[-1])
+                print(initial_string)
+            sum_player_hand = sum([assigned_card_values[card] for card in player_hand])
+            print("Your current total is " + str(sum_player_hand))
             hit_input = prompt_to_hit()
 
 player_hand, cards_left = update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned_card_values)
