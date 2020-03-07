@@ -28,9 +28,10 @@ def deal_initial_cards(list_of_all_cards):
     drawn_cards = random.sample(list_of_all_cards, 4)
     dealer_hand = drawn_cards[:2]
     player_hand = drawn_cards[2:]
-    return(dealer_hand, player_hand)
+    cards_left = [card for card in list_of_all_cards if card not in drawn_cards]
+    return(dealer_hand, player_hand, cards_left)
 
-dealer_hand, player_hand = deal_initial_cards(list_of_all_cards)
+dealer_hand, player_hand, cards_left = deal_initial_cards(list_of_all_cards)
 
 def output_dealt_initial_cards(dealer_hand, player_hand, assigned_card_values):
     print("The Dealer has a " + dealer_hand[0].split(" ")[-1] + " and one Unknown Card")
@@ -49,3 +50,36 @@ def prompt_to_hit():
     return(hit_input)
 
 hit_input = prompt_to_hit()
+
+def update_player_hand(hit_input, player_hand, dealer_hand, cards_left):
+    update_counter = 0
+    while update_counter < 1:
+        if hit_input == "Y" and len(player_hand) == 2:
+            player_hand.append(random.sample(cards_left, 1)[0])
+            # random.sample returns a list
+            print(len(player_hand), player_hand[2])
+            cards_left = [card for card in list_of_all_cards if card not in player_hand + dealer_hand]
+            initial_string = ("You have a " + player_hand[0].split(" ")[-1] + ", a "
+                              + player_hand[1].split(" ")[-1]+ ", and a "
+                              + player_hand[2].split(" ")[-1])
+            print(initial_string)
+            prompt_to_hit()
+        elif hit_input == "Y" and len(player_hand) > 2:
+            player_hand.append(random.sample(cards_left, 1)[0])
+            #random.sample returns a list
+            cards_left = [card for card in list_of_all_cards if card not in player_hand + dealer_hand]
+            initial_string = ("You have a " + player_hand[0].split(" ")[-1] + ", a " + player_hand[1].split(" ")[-1])
+            for card in range(2, len(player_hand) - 1):
+                initial_string += (", a " + player_hand[card])
+            initial_string += (", and a " + player_hand[-1])
+            print(initial_string)
+            prompt_to_hit()
+        elif hit_input == "N":
+            print("Player chose to Stay")
+            update_counter += 1
+            return (player_hand, cards_left)
+        else:
+            print("Incorrect input...")
+            prompt_to_hit()
+
+update_player_hand(hit_input, player_hand, dealer_hand, cards_left)
