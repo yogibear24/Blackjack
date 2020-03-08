@@ -2,7 +2,7 @@ import random
 
 def create_deck_of_cards():
     list_of_suits = ["Red_Heart", "Red_Diamond", "Black_Spade", "Black_Clover"]
-    list_of_card_types = [str(number) for number in range(1, 11)] + ["Jack", "Queen", "King"]
+    list_of_card_types = ["Ace"] + [str(number) for number in range(2, 11)] + ["Jack", "Queen", "King"]
     list_of_all_cards = []
     for suit in range(0, len(list_of_suits)):
         for card_type in range(0, len(list_of_card_types)):
@@ -15,9 +15,11 @@ def assign_card_values_to_dict(list_of_all_cards):
     card_value_dict = {}
     for card in range(0, len(list_of_all_cards)):
         current_card = list_of_all_cards[card]
-        if current_card[-1].isnumeric() is True and current_card[-1] != "0":
+        if current_card[-1].isnumeric() is True and current_card[-1] != ("0" or "1"):
             card_value_dict.update({current_card : int(current_card[-1])})
         # Assign initial value of 1 to a 1 Card, but later on mechanic is it can be 1 or 11...
+        elif current_card.endswith("Ace"):
+            card_value_dict.update({current_card : 1})
         elif current_card.endswith(("10", "Jack", "Queen", "King")):
             card_value_dict.update({current_card : 10})
     return(card_value_dict)
@@ -114,4 +116,5 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
 player_hand, cards_left = update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned_card_values)
 
 # TODO: How to account for 1 or 11 for future cards added to player's hand?
+# Maybe only append to the list of possible totals, if the total is <= 21?
 
