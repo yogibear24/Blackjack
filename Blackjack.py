@@ -68,8 +68,9 @@ def prompt_to_hit():
 
 hit_input = prompt_to_hit()
 
-def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned_card_values):
+def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned_card_values, list_of_possible_player_initial_totals):
     update_counter = 0
+    new_player_totals = []
     while update_counter < 1:
         if hit_input == "Y" and len(player_hand) == 2:
             player_hand.append(random.sample(cards_left, 1)[0])
@@ -80,6 +81,18 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
                               + player_hand[1].split(" ")[-1]+ ", and a "
                               + player_hand[2].split(" ")[-1])
             print(initial_string)
+            if player_hand[2].endswith("Ace"):
+                new_player_totals = [entry + 1 for entry in list_of_possible_player_initial_totals] + [entry + 11 for entry in list_of_possible_player_initial_totals]
+                if len(new_player_totals) > 1:
+                    print("Your current possible totals are " + str(new_player_totals).strip("[]"))
+                elif len(new_player_totals) == 1:
+                    print("Your current total is " + str(new_player_totals).strip("[]"))
+            else:
+                new_player_totals = [entry + assigned_card_values[player_hand[2]] for entry in list_of_possible_player_initial_totals]
+                if len(new_player_totals) > 1:
+                    print("Your current possible totals are " + str(new_player_totals).strip("[]"))
+                elif len(new_player_totals) == 1:
+                    print("Your current total is " + str(new_player_totals).strip("[]"))
             hit_input = prompt_to_hit()
         elif hit_input == "Y" and len(player_hand) > 2:
             player_hand.append(random.sample(cards_left, 1)[0])
@@ -91,11 +104,43 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
                 initial_string += (", a " + player_hand[card].split(" ")[-1])
             initial_string += (", and a " + player_hand[-1].split(" ")[-1])
             print(initial_string)
+            if player_hand[-1].endswith("Ace"):
+                new_player_totals = [entry + 1 for entry in new_player_totals] + [entry + 11 for entry in new_player_totals]
+                if len(new_player_totals) > 1:
+                    print("Your current possible totals are " + str(new_player_totals).strip("[]"))
+                elif len(new_player_totals) == 1:
+                    print("Your current total is " + str(new_player_totals).strip("[]"))
+            else:
+                new_player_totals = [entry + assigned_card_values[player_hand[-1]] for entry in new_player_totals]
+                if len(new_player_totals) > 1:
+                    print("Your current possible totals are " + str(new_player_totals).strip("[]"))
+                elif len(new_player_totals) == 1:
+                    print("Your current total is " + str(new_player_totals).strip("[]"))
             hit_input = prompt_to_hit()
         elif hit_input == "N":
             print("\n" + "Player chose to Stay")
             update_counter += 1
-            return (player_hand, cards_left)
+            print("\n" + "The Dealer has a " + str(assigned_card_values[dealer_hand[0]]) + " and one Unknown Card")
+            if len(player_hand) == 2:
+                initial_string = ("You have a " + player_hand[0].split(" ")[-1] + ", and a "
+                                  + player_hand[1].split(" ")[-1])
+                print(initial_string)
+                if len(list_of_possible_player_initial_totals) > 1:
+                    print("Your current possible totals are " + str(list_of_possible_player_initial_totals).strip("[]"))
+                elif len(list_of_possible_player_initial_totals) == 1:
+                    print("Your current total is " + str(list_of_possible_player_initial_totals).strip("[]"))
+            elif len(player_hand) > 2:
+                initial_string = (
+                            "You have a " + player_hand[0].split(" ")[-1] + ", a " + player_hand[1].split(" ")[-1])
+                for card in range(2, len(player_hand) - 1):
+                    initial_string += (", a " + player_hand[card].split(" ")[-1])
+                initial_string += (", and a " + player_hand[-1].split(" ")[-1])
+                print(initial_string)
+                if len(new_player_totals) > 1:
+                    print("Your current possible totals are " + str(new_player_totals).strip("[]"))
+                elif len(new_player_totals) == 1:
+                    print("Your current total is " + str(new_player_totals).strip("[]"))
+            return (player_hand, cards_left, new_player_totals)
         else:
             print("\n" + "Incorrect input...")
             print("\n" + "The Dealer has a " + str(assigned_card_values[dealer_hand[0]]) + " and one Unknown Card")
@@ -103,17 +148,23 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
                 initial_string = ("You have a " + player_hand[0].split(" ")[-1] + ", and a "
                                   + player_hand[1].split(" ")[-1])
                 print(initial_string)
+                if len(list_of_possible_player_initial_totals) > 1:
+                    print("Your current possible totals are " + str(list_of_possible_player_initial_totals).strip("[]"))
+                elif len(list_of_possible_player_initial_totals) == 1:
+                    print("Your current total is " + str(list_of_possible_player_initial_totals).strip("[]"))
             elif len(player_hand) > 2:
                 initial_string = ("You have a " + player_hand[0].split(" ")[-1] + ", a " + player_hand[1].split(" ")[-1])
                 for card in range(2, len(player_hand) - 1):
                     initial_string += (", a " + player_hand[card].split(" ")[-1])
                 initial_string += (", and a " + player_hand[-1].split(" ")[-1])
                 print(initial_string)
-#            if len(list_of_possible_player_initial_totals) == 1:
-#                print(print("Your current total is " + str(list_of_possible_player_initial_totals[0])))
+                if len(new_player_totals) > 1:
+                    print("Your current possible totals are " + str(new_player_totals).strip("[]"))
+                elif len(new_player_totals) == 1:
+                    print("Your current total is " + str(new_player_totals).strip("[]"))
             hit_input = prompt_to_hit()
 
-player_hand, cards_left = update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned_card_values)
+player_hand, cards_left, new_player_totals = update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned_card_values, list_of_possible_player_initial_totals)
 
 # TODO: How to account for 1 or 11 for future cards added to player's hand?
 # Maybe only append to the list of possible totals, if the total is <= 21?
