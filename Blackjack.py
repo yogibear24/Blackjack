@@ -36,12 +36,27 @@ dealer_hand, player_hand, cards_left = deal_initial_cards(list_of_all_cards)
 def output_dealt_initial_cards(dealer_hand, player_hand, assigned_card_values):
     print("The Dealer has a " + dealer_hand[0].split(" ")[-1] + " and one Unknown Card")
     print("You have a " + player_hand[0].split(" ")[-1] + " and a " + player_hand[1].split(" ")[-1])
-    player_initial_total = assigned_card_values[player_hand[0]] + assigned_card_values[player_hand[1]]
-    print("\n" + "The Dealer currently has " + str(assigned_card_values[dealer_hand[0]]) + " and one Unknown Number")
     # Print the dealer's hand value in case people do not know what value a face card is
-    print("Your current total is " + str(player_initial_total))
+    list_of_possible_player_initial_totals = []
+    if assigned_card_values[player_hand[0]] == 1 and assigned_card_values[player_hand[1]] != 1:
+        list_of_possible_player_initial_totals.append(1 + assigned_card_values[player_hand[1]])
+        list_of_possible_player_initial_totals.append(11 + assigned_card_values[player_hand[1]])
+        print("Your current possible totals are " + str(list_of_possible_player_initial_totals).strip("[]"))
+    elif assigned_card_values[player_hand[0]] == 1 and assigned_card_values[player_hand[1]] == 1:
+        list_of_possible_player_initial_totals.append(1 + 1)
+        list_of_possible_player_initial_totals.append(11 + 1)
+        list_of_possible_player_initial_totals.append(11 + 11)
+        print("Your current possible totals are " + str(list_of_possible_player_initial_totals).strip("[]"))
+    elif assigned_card_values[player_hand[0]] != 1 and assigned_card_values[player_hand[1]] == 1:
+        list_of_possible_player_initial_totals.append(assigned_card_values[player_hand[0]] + 1)
+        list_of_possible_player_initial_totals.append(assigned_card_values[player_hand[0]] + 11)
+        print("Your current possible totals are " + str(list_of_possible_player_initial_totals).strip("[]"))
+    elif assigned_card_values[player_hand[0]] != 1 and assigned_card_values[player_hand[1]] != 1:
+        list_of_possible_player_initial_totals.append(assigned_card_values[player_hand[0]] + assigned_card_values[player_hand[1]])
+        print("Your current total is " + str(list_of_possible_player_initial_totals[0]))
+    return(list_of_possible_player_initial_totals)
 
-output_dealt_initial_cards(dealer_hand, player_hand, assigned_card_values)
+list_of_possible_player_initial_totals = output_dealt_initial_cards(dealer_hand, player_hand, assigned_card_values)
 
 def prompt_to_hit():
     print("\n" + "Do you want to Hit?")
@@ -63,8 +78,6 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
                               + player_hand[1].split(" ")[-1]+ ", and a "
                               + player_hand[2].split(" ")[-1])
             print(initial_string)
-            sum_player_hand = sum([assigned_card_values[card] for card in player_hand])
-            print("Your current total is " + str(sum_player_hand))
             hit_input = prompt_to_hit()
         elif hit_input == "Y" and len(player_hand) > 2:
             player_hand.append(random.sample(cards_left, 1)[0])
@@ -76,8 +89,6 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
                 initial_string += (", a " + player_hand[card].split(" ")[-1])
             initial_string += (", and a " + player_hand[-1].split(" ")[-1])
             print(initial_string)
-            sum_player_hand = sum([assigned_card_values[card] for card in player_hand])
-            print("Your current total is " + str(sum_player_hand))
             hit_input = prompt_to_hit()
         elif hit_input == "N":
             print("\n" + "Player chose to Stay")
@@ -85,11 +96,10 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
             return (player_hand, cards_left)
         else:
             print("\n" + "Incorrect input...")
-            print("\n" + "The Dealer currently has " + str(assigned_card_values[dealer_hand[0]]) + " and one Unknown Number")
+            print("\n" + "The Dealer has a " + str(assigned_card_values[dealer_hand[0]]) + " and one Unknown Card")
             if len(player_hand) == 2:
-                initial_string = ("You have a " + player_hand[0].split(" ")[-1] + ", a "
-                                  + player_hand[1].split(" ")[-1] + ", and a "
-                                  + player_hand[2].split(" ")[-1])
+                initial_string = ("You have a " + player_hand[0].split(" ")[-1] + ", and a "
+                                  + player_hand[1].split(" ")[-1])
                 print(initial_string)
             elif len(player_hand) > 2:
                 initial_string = ("You have a " + player_hand[0].split(" ")[-1] + ", a " + player_hand[1].split(" ")[-1])
@@ -97,8 +107,11 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
                     initial_string += (", a " + player_hand[card].split(" ")[-1])
                 initial_string += (", and a " + player_hand[-1].split(" ")[-1])
                 print(initial_string)
-            sum_player_hand = sum([assigned_card_values[card] for card in player_hand])
-            print("Your current total is " + str(sum_player_hand))
+#            if len(list_of_possible_player_initial_totals) == 1:
+#                print(print("Your current total is " + str(list_of_possible_player_initial_totals[0])))
             hit_input = prompt_to_hit()
 
 player_hand, cards_left = update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned_card_values)
+
+# TODO: How to account for 1 or 11 for future cards added to player's hand?
+
