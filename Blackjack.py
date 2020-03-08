@@ -166,6 +166,6 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
 
 player_hand, cards_left, new_player_totals = update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned_card_values, list_of_possible_player_initial_totals)
 
-# TODO: How to account for 1 or 11 for future cards added to player's hand?
-# Maybe only append to the list of possible totals, if the total is <= 21?
+# TODO: Break down "output_dealt_initial_cards" and "update_player_hand" to have multiple functions,
+#  so that there are less lines of code in the overall functions.
 
