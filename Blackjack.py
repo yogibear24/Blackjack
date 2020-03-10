@@ -143,7 +143,6 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
 
 player_hand, cards_left, new_player_totals = update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned_card_values, list_of_possible_player_initial_totals)
 
-# TODO: Set automatic Turn End if player busts
 # TODO: Create function for dealer to show Unknown Card and draw until 17 to 21 or bust
 # TODO: Calculation function to see who wins
 
