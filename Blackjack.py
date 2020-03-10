@@ -102,34 +102,53 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
     update_counter = 0
     new_player_totals = []
     while update_counter < 1:
-        if hit_input == "Y" and all(total > 21 for total in new_player_totals) is True:
-            output_dealer_and_initial_status(assigned_card_values, dealer_hand, player_hand)
-            action_output(new_player_totals)
-            print("\n" + "BUST... Got over 21, moving to Dealer's Turn")
-            new_player_totals = ["BUST"]
-            update_counter += 1
-            return (player_hand, cards_left, new_player_totals)
-        elif hit_input == "Y" and len(player_hand) == 2:
+        if hit_input == "Y" and len(player_hand) == 2:
             cards_left = draw_card(cards_left, player_hand, dealer_hand, list_of_all_cards)
             output_dealer_and_initial_status(assigned_card_values, dealer_hand, player_hand)
             if player_hand[-1].endswith("Ace"):
                 new_player_totals = ([entry + 1 for entry in list_of_possible_player_initial_totals]
                                      + [entry + 11 for entry in list_of_possible_player_initial_totals])
                 action_output(new_player_totals)
+                if all(total > 21 for total in new_player_totals) is True:
+                    new_player_totals = ["BUST"]
+                    print("\n" + "BUST... Got over 21, moving to Dealer's Turn")
+                    update_counter += 1
+                    return (player_hand, cards_left, new_player_totals)
+                else:
+                    hit_input = prompt_to_hit()
             else:
                 new_player_totals = [entry + assigned_card_values[player_hand[2]] for entry in list_of_possible_player_initial_totals]
                 action_output(new_player_totals)
-            hit_input = prompt_to_hit()
+                if all(total > 21 for total in new_player_totals) is True:
+                    new_player_totals = ["BUST"]
+                    print("\n" + "BUST... Got over 21, moving to Dealer's Turn")
+                    update_counter += 1
+                    return (player_hand, cards_left, new_player_totals)
+                else:
+                    hit_input = prompt_to_hit()
         elif hit_input == "Y" and len(player_hand) > 2:
             cards_left = draw_card(cards_left, player_hand, dealer_hand, list_of_all_cards)
             output_dealer_and_initial_status(assigned_card_values, dealer_hand, player_hand)
             if player_hand[-1].endswith("Ace"):
                 new_player_totals = [entry + 1 for entry in new_player_totals] + [entry + 11 for entry in new_player_totals]
                 action_output(new_player_totals)
+                if all(total > 21 for total in new_player_totals) is True:
+                    new_player_totals = ["BUST"]
+                    print("\n" + "BUST... Got over 21, moving to Dealer's Turn")
+                    update_counter += 1
+                    return (player_hand, cards_left, new_player_totals)
+                else:
+                    hit_input = prompt_to_hit()
             else:
                 new_player_totals = [entry + assigned_card_values[player_hand[-1]] for entry in new_player_totals]
                 action_output(new_player_totals)
-            hit_input = prompt_to_hit()
+                if all(total > 21 for total in new_player_totals) is True:
+                    new_player_totals = ["BUST"]
+                    print("\n" + "BUST... Got over 21, moving to Dealer's Turn")
+                    update_counter += 1
+                    return (player_hand, cards_left, new_player_totals)
+                else:
+                    hit_input = prompt_to_hit()
         elif hit_input == "N":
             print("\n" + "Player chose to Stay")
             update_counter += 1
@@ -142,8 +161,10 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
                                             list_of_possible_player_initial_totals, new_player_totals)
             hit_input = prompt_to_hit()
 
-player_hand, cards_left, new_player_totals = update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned_card_values, list_of_possible_player_initial_totals)
+player_hand, cards_left, new_player_totals = update_player_hand(hit_input, player_hand, dealer_hand, cards_left,
+                                                                assigned_card_values,
+                                                                list_of_possible_player_initial_totals)
 
+# TODO: Break down update_player_hand function again, since now adding Bust checking
 # TODO: Create function for dealer to show Unknown Card and draw until 17 to 21 or bust
 # TODO: Calculation function to see who wins
-
