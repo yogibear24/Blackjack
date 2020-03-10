@@ -71,42 +71,51 @@ def prompt_to_hit():
 
 hit_input = prompt_to_hit()
 
+def draw_card(cards_left, player_hand, dealer_hand, list_of_all_cards):
+    player_hand.append(random.sample(cards_left, 1)[0])
+    # random.sample returns a list
+    return([card for card in list_of_all_cards if card not in player_hand + dealer_hand])
+
+def output_dealer_and_initial_status(assigned_card_values, dealer_hand, player_hand):
+    print("\n" + "The Dealer currently has " + str(assigned_card_values[dealer_hand[0]]) + " and one Unknown Number")
+    initial_string = ("You have a " + player_hand[0].split(" ")[-1] + ", a " + player_hand[1].split(" ")[-1])
+    for card in range(2, len(player_hand) - 1):
+        initial_string += (", a " + player_hand[card].split(" ")[-1])
+    initial_string += (", and a " + player_hand[-1].split(" ")[-1])
+    print(initial_string)
+
 def action_output(original_list_of_totals):
     if len(original_list_of_totals) > 1:
         print("Your current possible totals are " + str(original_list_of_totals).strip("[]"))
     elif len(original_list_of_totals) == 1:
         print("Your current total is " + str(original_list_of_totals).strip("[]"))
 
+def output_if_stay_or_incorrect_input(assigned_card_values, dealer_hand, player_hand, list_of_possible_player_initial_totals, new_player_totals):
+    if len(player_hand) == 2:
+        output_dealer_and_initial_status(assigned_card_values, dealer_hand, player_hand)
+        action_output(list_of_possible_player_initial_totals)
+    elif len(player_hand) > 2:
+        output_dealer_and_initial_status(assigned_card_values, dealer_hand, player_hand)
+        action_output(new_player_totals)
+
 def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned_card_values, list_of_possible_player_initial_totals):
     update_counter = 0
     new_player_totals = []
     while update_counter < 1:
         if hit_input == "Y" and len(player_hand) == 2:
-            player_hand.append(random.sample(cards_left, 1)[0])
-            # random.sample returns a list
-            cards_left = [card for card in list_of_all_cards if card not in player_hand + dealer_hand]
-            print("\n" + "The Dealer currently has " + str(assigned_card_values[dealer_hand[0]]) + " and one Unknown Number")
-            initial_string = ("You have a " + player_hand[0].split(" ")[-1] + ", a "
-                              + player_hand[1].split(" ")[-1]+ ", and a "
-                              + player_hand[2].split(" ")[-1])
-            print(initial_string)
+            cards_left = draw_card(cards_left, player_hand, dealer_hand, list_of_all_cards)
+            output_dealer_and_initial_status(assigned_card_values, dealer_hand, player_hand)
             if player_hand[-1].endswith("Ace"):
-                new_player_totals = [entry + 1 for entry in list_of_possible_player_initial_totals] + [entry + 11 for entry in list_of_possible_player_initial_totals]
+                new_player_totals = ([entry + 1 for entry in list_of_possible_player_initial_totals]
+                                     + [entry + 11 for entry in list_of_possible_player_initial_totals])
                 action_output(new_player_totals)
             else:
                 new_player_totals = [entry + assigned_card_values[player_hand[2]] for entry in list_of_possible_player_initial_totals]
                 action_output(new_player_totals)
             hit_input = prompt_to_hit()
         elif hit_input == "Y" and len(player_hand) > 2:
-            player_hand.append(random.sample(cards_left, 1)[0])
-            #random.sample returns a list
-            cards_left = [card for card in list_of_all_cards if card not in player_hand + dealer_hand]
-            print("\n" + "The Dealer currently has " + str(assigned_card_values[dealer_hand[0]]) + " and one Unknown Number")
-            initial_string = ("You have a " + player_hand[0].split(" ")[-1] + ", a " + player_hand[1].split(" ")[-1])
-            for card in range(2, len(player_hand) - 1):
-                initial_string += (", a " + player_hand[card].split(" ")[-1])
-            initial_string += (", and a " + player_hand[-1].split(" ")[-1])
-            print(initial_string)
+            cards_left = draw_card(cards_left, player_hand, dealer_hand, list_of_all_cards)
+            output_dealer_and_initial_status(assigned_card_values, dealer_hand, player_hand)
             if player_hand[-1].endswith("Ace"):
                 new_player_totals = [entry + 1 for entry in new_player_totals] + [entry + 11 for entry in new_player_totals]
                 action_output(new_player_totals)
@@ -117,36 +126,13 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
         elif hit_input == "N":
             print("\n" + "Player chose to Stay")
             update_counter += 1
-            print("\n" + "The Dealer has a " + str(assigned_card_values[dealer_hand[0]]) + " and one Unknown Card")
-            if len(player_hand) == 2:
-                initial_string = ("You have a " + player_hand[0].split(" ")[-1] + ", and a "
-                                  + player_hand[1].split(" ")[-1])
-                print(initial_string)
-                action_output(list_of_possible_player_initial_totals)
-            elif len(player_hand) > 2:
-                initial_string = (
-                            "You have a " + player_hand[0].split(" ")[-1] + ", a " + player_hand[1].split(" ")[-1])
-                for card in range(2, len(player_hand) - 1):
-                    initial_string += (", a " + player_hand[card].split(" ")[-1])
-                initial_string += (", and a " + player_hand[-1].split(" ")[-1])
-                print(initial_string)
-                action_output(new_player_totals)
+            output_if_stay_or_incorrect_input(assigned_card_values, dealer_hand, player_hand,
+                                            list_of_possible_player_initial_totals, new_player_totals)
             return (player_hand, cards_left, new_player_totals)
         else:
             print("\n" + "Incorrect input...")
-            print("\n" + "The Dealer has a " + str(assigned_card_values[dealer_hand[0]]) + " and one Unknown Card")
-            if len(player_hand) == 2:
-                initial_string = ("You have a " + player_hand[0].split(" ")[-1] + ", and a "
-                                  + player_hand[1].split(" ")[-1])
-                print(initial_string)
-                action_output(list_of_possible_player_initial_totals)
-            elif len(player_hand) > 2:
-                initial_string = ("You have a " + player_hand[0].split(" ")[-1] + ", a " + player_hand[1].split(" ")[-1])
-                for card in range(2, len(player_hand) - 1):
-                    initial_string += (", a " + player_hand[card].split(" ")[-1])
-                initial_string += (", and a " + player_hand[-1].split(" ")[-1])
-                print(initial_string)
-                action_output(new_player_totals)
+            output_if_stay_or_incorrect_input(assigned_card_values, dealer_hand, player_hand,
+                                            list_of_possible_player_initial_totals, new_player_totals)
             hit_input = prompt_to_hit()
 
 player_hand, cards_left, new_player_totals = update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned_card_values, list_of_possible_player_initial_totals)
