@@ -104,6 +104,7 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
     while update_counter < 1:
         if hit_input == "Y" and all(total > 21 for total in new_player_totals) is True:
             output_dealer_and_initial_status(assigned_card_values, dealer_hand, player_hand)
+            action_output(new_player_totals)
             print("\n" + "BUST... Got over 21, moving to Dealer's Turn")
             new_player_totals = ["BUST"]
             update_counter += 1
