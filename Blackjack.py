@@ -98,6 +98,20 @@ def output_if_stay_or_incorrect_input(assigned_card_values, dealer_hand, player_
         output_dealer_and_initial_status(assigned_card_values, dealer_hand, player_hand)
         action_output(new_player_totals)
 
+def check_for_21_or_over(new_player_totals, update_counter, player_hand, cards_left):
+    if all(total > 21 for total in new_player_totals) is True:
+        new_player_totals = ["BUST"]
+        print("\n" + "BUST... Got over 21, moving to Dealer's Turn")
+        update_counter += 1
+        return (player_hand, cards_left, new_player_totals)
+    else:
+        hit_input = prompt_to_hit()
+
+def bust_output(new_player_totals, update_counter):
+    new_player_totals = ["BUST"]
+    print("\n" + "BUST... Got over 21, moving to Dealer's Turn")
+    update_counter += 1
+
 def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned_card_values, list_of_possible_player_initial_totals):
     update_counter = 0
     new_player_totals = []
@@ -110,9 +124,7 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
                                      + [entry + 11 for entry in list_of_possible_player_initial_totals])
                 action_output(new_player_totals)
                 if all(total > 21 for total in new_player_totals) is True:
-                    new_player_totals = ["BUST"]
-                    print("\n" + "BUST... Got over 21, moving to Dealer's Turn")
-                    update_counter += 1
+                    bust_output(new_player_totals, update_counter)
                     return (player_hand, cards_left, new_player_totals)
                 else:
                     hit_input = prompt_to_hit()
@@ -120,9 +132,7 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
                 new_player_totals = [entry + assigned_card_values[player_hand[2]] for entry in list_of_possible_player_initial_totals]
                 action_output(new_player_totals)
                 if all(total > 21 for total in new_player_totals) is True:
-                    new_player_totals = ["BUST"]
-                    print("\n" + "BUST... Got over 21, moving to Dealer's Turn")
-                    update_counter += 1
+                    bust_output(new_player_totals, update_counter)
                     return (player_hand, cards_left, new_player_totals)
                 else:
                     hit_input = prompt_to_hit()
@@ -133,9 +143,7 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
                 new_player_totals = [entry + 1 for entry in new_player_totals] + [entry + 11 for entry in new_player_totals]
                 action_output(new_player_totals)
                 if all(total > 21 for total in new_player_totals) is True:
-                    new_player_totals = ["BUST"]
-                    print("\n" + "BUST... Got over 21, moving to Dealer's Turn")
-                    update_counter += 1
+                    bust_output(new_player_totals, update_counter)
                     return (player_hand, cards_left, new_player_totals)
                 else:
                     hit_input = prompt_to_hit()
@@ -143,9 +151,7 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
                 new_player_totals = [entry + assigned_card_values[player_hand[-1]] for entry in new_player_totals]
                 action_output(new_player_totals)
                 if all(total > 21 for total in new_player_totals) is True:
-                    new_player_totals = ["BUST"]
-                    print("\n" + "BUST... Got over 21, moving to Dealer's Turn")
-                    update_counter += 1
+                    bust_output(new_player_totals, update_counter)
                     return (player_hand, cards_left, new_player_totals)
                 else:
                     hit_input = prompt_to_hit()
