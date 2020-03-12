@@ -171,6 +171,5 @@ player_hand, cards_left, new_player_totals = update_player_hand(hit_input, playe
                                                                 assigned_card_values,
                                                                 list_of_possible_player_initial_totals)
 
-# TODO: Break down update_player_hand function again, since now adding Bust checking
 # TODO: Create function for dealer to show Unknown Card and draw until 17 to 21 or bust
 # TODO: Calculation function to see who wins
