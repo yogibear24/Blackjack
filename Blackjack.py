@@ -1,4 +1,6 @@
 import random
+import time
+from time import sleep
 
 def create_deck_of_cards():
     list_of_suits = ["Red_Heart", "Red_Diamond", "Black_Spade", "Black_Clover"]
@@ -92,7 +94,9 @@ def action_output(original_list_of_totals):
 
 def output_if_stay_or_incorrect_input(dealer_hand, player_hand):
     if len(player_hand) == 2:
-        output_dealer_and_initial_status(dealer_hand, player_hand)
+        print("\n" + "The Dealer has a " + dealer_hand[0].split(" ")[-1] + " and one Unknown Card")
+        initial_string = ("You have a " + player_hand[0].split(" ")[-1] + " and a " + player_hand[1].split(" ")[-1])
+        print(initial_string)
     elif len(player_hand) > 2:
         output_dealer_and_initial_status(dealer_hand, player_hand)
 
@@ -198,15 +202,18 @@ def output_dealer_status(dealer_hand):
     print(initial_string)
 
 def update_dealer_hand(player_hand, cards_left, dealer_hand, assigned_card_values):
-    print("\n" + "The Dealer flips over the Unknown Card")
+    print("\n" + "The Dealer flips over the Unknown Card...")
+    time.sleep(2)
     print("The Dealer has a " + dealer_hand[0].split(" ")[-1] + " and a " + dealer_hand[1].split(" ")[-1])
+    time.sleep(2)
     list_of_possible_dealer_totals = []
     generate_possible_dealer_initial_totals(dealer_hand, assigned_card_values, list_of_possible_dealer_totals)
     dealer_final_value = 0
     dealer_counter = 0
     while dealer_counter < 1:
         if all(total < 17 for total in list_of_possible_dealer_totals) is True:
-            print("\n" + "The Dealer draws a card...")
+            print("\n" + "The Dealer draws a card..." + "\n")
+            time.sleep(2)
             cards_left = draw_card(cards_left, dealer_hand, player_hand)
             output_dealer_status(dealer_hand)
             if dealer_hand[-1].endswith("Ace"):
@@ -221,6 +228,7 @@ def update_dealer_hand(player_hand, cards_left, dealer_hand, assigned_card_value
             return(dealer_final_value)
         elif any((17 <= total <= 21) for total in list_of_possible_dealer_totals) is True:
             dealer_counter += 1
+            print("\n" + "Dealer chooses to Stay")
             list_of_possible_dealer_totals = [total for total in list_of_possible_dealer_totals if (17 <= total <= 21)]
             dealer_final_value = max(list_of_possible_dealer_totals)
             print("The Dealer Total is " + str(dealer_final_value))
@@ -228,5 +236,19 @@ def update_dealer_hand(player_hand, cards_left, dealer_hand, assigned_card_value
 
 dealer_final_value = update_dealer_hand(player_hand, cards_left, dealer_hand, assigned_card_values)
 
-# TODO: Calculation function to see who wins using player_final_value and dealer_final_value
+def calculate_winner(player_final_value, dealer_final_value):
+    if (player_final_value and dealer_final_value) != "BUST":
+        if (player_final_value - dealer_final_value) < 0:
+            print("\n" + "Dealer Wins, You Lose")
+        elif (player_final_value - dealer_final_value) > 0:
+            print("\n" + "You Win!")
+        elif (player_final_value - dealer_final_value) == 0:
+            print("\n" + "Dealer and Player Tie")
+    elif player_final_value == "BUST" and dealer_final_value != "BUST":
+        print("\n" + "Dealer Wins, You Lose")
+    elif player_final_value != "BUST" and dealer_final_value == "BUST":
+        print("\n" + "You Win!")
+
+calculate_winner(final_player_value, dealer_final_value)
+
 # TODO: Loop and Prompt Menu for player to continue playing or not
