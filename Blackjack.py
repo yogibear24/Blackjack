@@ -1,6 +1,5 @@
 import random
 import time
-from time import sleep
 
 def create_deck_of_cards():
     list_of_suits = ["Red_Heart", "Red_Diamond", "Black_Spade", "Black_Clover"]
@@ -10,8 +9,6 @@ def create_deck_of_cards():
         for card_type in range(0, len(list_of_card_types)):
             list_of_all_cards.append(list_of_suits[suit] + " " + list_of_card_types[card_type])
     return(list_of_all_cards)
-
-list_of_all_cards = create_deck_of_cards()
 
 def assign_card_values_to_dict(list_of_all_cards):
     card_value_dict = {}
@@ -26,16 +23,12 @@ def assign_card_values_to_dict(list_of_all_cards):
             card_value_dict.update({current_card : 10})
     return(card_value_dict)
 
-assigned_card_values = assign_card_values_to_dict(list_of_all_cards)
-
 def deal_initial_cards(list_of_all_cards):
     drawn_cards = random.sample(list_of_all_cards, 4)
     dealer_hand = drawn_cards[:2]
     player_hand = drawn_cards[2:]
     cards_left = [card for card in list_of_all_cards if card not in drawn_cards]
     return(dealer_hand, player_hand, cards_left)
-
-dealer_hand, player_hand, cards_left = deal_initial_cards(list_of_all_cards)
 
 def generate_possible_player_initial_totals(player_hand, assigned_card_values, list_of_possible_player_initial_totals):
     if assigned_card_values[player_hand[0]] == 1 and assigned_card_values[player_hand[1]] != 1:
@@ -63,15 +56,11 @@ def output_dealt_initial_cards(dealer_hand, player_hand, assigned_card_values):
     generate_possible_player_initial_totals(player_hand, assigned_card_values, list_of_possible_player_initial_totals)
     return(list_of_possible_player_initial_totals)
 
-list_of_possible_player_initial_totals = output_dealt_initial_cards(dealer_hand, player_hand, assigned_card_values)
-
 def prompt_to_hit():
     print("\n" + "Do you want to Hit?")
     print("Type 'Y' to Hit or 'N' to Stay")
     hit_input = input()
     return(hit_input)
-
-hit_input = prompt_to_hit()
 
 def draw_card(cards_left, hand_to_append, other_hand):
     hand_to_append.append(random.sample(cards_left, 1)[0])
@@ -176,10 +165,6 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
             output_if_stay_or_incorrect_input(dealer_hand, player_hand)
             hit_input = prompt_to_hit()
 
-player_hand, cards_left, final_player_value = update_player_hand(hit_input, player_hand, dealer_hand, cards_left,
-                                                                assigned_card_values,
-                                                                list_of_possible_player_initial_totals)
-
 def generate_possible_dealer_initial_totals(dealer_hand, assigned_card_values, list_of_possible_dealer_initial_totals):
     if assigned_card_values[dealer_hand[0]] == 1 and assigned_card_values[dealer_hand[1]] != 1:
         list_of_possible_dealer_initial_totals.append(1 + assigned_card_values[dealer_hand[1]])
@@ -234,8 +219,6 @@ def update_dealer_hand(player_hand, cards_left, dealer_hand, assigned_card_value
             print("The Dealer Total is " + str(dealer_final_value))
             return(dealer_final_value)
 
-dealer_final_value = update_dealer_hand(player_hand, cards_left, dealer_hand, assigned_card_values)
-
 def calculate_winner(player_final_value, dealer_final_value):
     if (player_final_value and dealer_final_value) != "BUST":
         if (player_final_value - dealer_final_value) < 0:
@@ -249,6 +232,38 @@ def calculate_winner(player_final_value, dealer_final_value):
     elif player_final_value != "BUST" and dealer_final_value == "BUST":
         print("\n" + "You Win!")
 
-calculate_winner(final_player_value, dealer_final_value)
+def continue_game():
+    time.sleep(2)
+    print("\n" + "Play another game?")
+    print("Type 'Y' to Continue or 'N' to Quit")
+    continue_input = input()
+    return(continue_input)
 
-# TODO: Loop and Prompt Menu for player to continue playing or not
+def full_game_run():
+    print("BLACKJACK" + "\n")
+    time.sleep(1)
+    game_counter = 0
+    while game_counter < 1:
+        list_of_all_cards = create_deck_of_cards()
+        assigned_card_values = assign_card_values_to_dict(list_of_all_cards)
+        dealer_hand, player_hand, cards_left = deal_initial_cards(list_of_all_cards)
+        list_of_possible_player_initial_totals = output_dealt_initial_cards(dealer_hand, player_hand,
+                                                                            assigned_card_values)
+        hit_input = prompt_to_hit()
+        player_hand, cards_left, final_player_value = update_player_hand(hit_input, player_hand, dealer_hand,
+                                                                         cards_left,
+                                                                         assigned_card_values,
+                                                                         list_of_possible_player_initial_totals)
+        dealer_final_value = update_dealer_hand(player_hand, cards_left, dealer_hand, assigned_card_values)
+        calculate_winner(final_player_value, dealer_final_value)
+        continue_input = continue_game()
+        if continue_input == "Y":
+            game_counter += 0
+        elif continue_input == "N":
+            game_counter += 1
+        else:
+            while continue_input != ("Y" or "N"):
+                continue_input = continue_game()
+
+full_game_run()
+
