@@ -98,8 +98,7 @@ def check_for_21_or_over(new_player_totals, update_counter, player_hand, cards_l
     else:
         hit_input = prompt_to_hit()
 
-def bust_output(final_player_value, update_counter):
-    final_player_value = "BUST"
+def bust_output(update_counter):
     print("\n" + "BUST... Got over 21, moving to Dealer's Turn")
     update_counter += 1
 
@@ -116,7 +115,8 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
                                      + [entry + 11 for entry in list_of_possible_player_initial_totals])
                 action_output(new_player_totals)
                 if all(total > 21 for total in new_player_totals) is True:
-                    bust_output(final_player_value, update_counter)
+                    final_player_value = "BUST"
+                    bust_output(update_counter)
                     return (player_hand, cards_left, final_player_value)
                 else:
                     hit_input = prompt_to_hit()
@@ -124,7 +124,8 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
                 new_player_totals = [entry + assigned_card_values[player_hand[2]] for entry in list_of_possible_player_initial_totals]
                 action_output(new_player_totals)
                 if all(total > 21 for total in new_player_totals) is True:
-                    bust_output(final_player_value, update_counter)
+                    final_player_value = "BUST"
+                    bust_output(update_counter)
                     return (player_hand, cards_left, final_player_value)
                 else:
                     hit_input = prompt_to_hit()
@@ -135,7 +136,8 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
                 new_player_totals = [entry + 1 for entry in new_player_totals] + [entry + 11 for entry in new_player_totals]
                 action_output(new_player_totals)
                 if all(total > 21 for total in new_player_totals) is True:
-                    bust_output(final_player_value, update_counter)
+                    final_player_value = "BUST"
+                    bust_output(update_counter)
                     return (player_hand, cards_left, final_player_value)
                 else:
                     hit_input = prompt_to_hit()
@@ -143,7 +145,8 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
                 new_player_totals = [entry + assigned_card_values[player_hand[-1]] for entry in new_player_totals]
                 action_output(new_player_totals)
                 if all(total > 21 for total in new_player_totals) is True:
-                    bust_output(final_player_value, update_counter)
+                    final_player_value = "BUST"
+                    bust_output(update_counter)
                     return (player_hand, cards_left, final_player_value)
                 else:
                     hit_input = prompt_to_hit()
@@ -163,6 +166,7 @@ def update_player_hand(hit_input, player_hand, dealer_hand, cards_left, assigned
         else:
             print("\n" + "Incorrect input...")
             output_if_stay_or_incorrect_input(dealer_hand, player_hand)
+            action_output(new_player_totals)
             hit_input = prompt_to_hit()
 
 def generate_possible_dealer_initial_totals(dealer_hand, assigned_card_values, list_of_possible_dealer_initial_totals):
@@ -220,13 +224,15 @@ def update_dealer_hand(player_hand, cards_left, dealer_hand, assigned_card_value
             return(dealer_final_value)
 
 def calculate_winner(player_final_value, dealer_final_value):
-    if (player_final_value and dealer_final_value) != "BUST":
+    if player_final_value != "BUST" and dealer_final_value != "BUST":
         if (player_final_value - dealer_final_value) < 0:
             print("\n" + "Dealer Wins, You Lose")
         elif (player_final_value - dealer_final_value) > 0:
             print("\n" + "You Win!")
         elif (player_final_value - dealer_final_value) == 0:
             print("\n" + "Dealer and Player Tie")
+    elif player_final_value == "BUST" and dealer_final_value == "BUST":
+        print("\n" + "Dealer and Player Tie")
     elif player_final_value == "BUST" and dealer_final_value != "BUST":
         print("\n" + "Dealer Wins, You Lose")
     elif player_final_value != "BUST" and dealer_final_value == "BUST":
@@ -259,12 +265,15 @@ def full_game_run():
         continue_input = continue_game()
         if continue_input == "Y":
             game_counter += 0
+#            print("\n")
         elif continue_input == "N":
             game_counter += 1
+            break
         else:
             while continue_input != ("Y" or "N"):
                 continue_input = continue_game()
 
 full_game_run()
 
+# TODO: Fix the bug when Dealer gets a card + Ace + card, gets stuck in loop
 # TODO: Make a GUI using Qt for Python
